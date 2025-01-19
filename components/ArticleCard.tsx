@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+} from "react-native";
 import { Article } from "@/types/article";
 
 type ArticleCardProps = {
@@ -7,6 +14,20 @@ type ArticleCardProps = {
 };
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
+  const openInBrowser = async (url: string) => {
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        alert("Unable to open this URL.");
+      }
+    } catch (error) {
+      console.error("Error opening URL:", error);
+      alert("An error occurred while trying to open the URL.");
+    }
+  };
+
   return (
     <View style={styles.card}>
       <Image source={{ uri: article.urlToImage }} style={styles.image} />
@@ -17,9 +38,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
         </Text>
         <Text style={styles.author}>By: {article.author || "Unknown"}</Text>
         <TouchableOpacity
-          onPress={() => {
-            alert(`Read more at: ${article.url}`);
-          }}
+          onPress={() => openInBrowser(article.url)}
           style={styles.readMoreButton}
         >
           <Text style={styles.readMoreText}>Read More</Text>
