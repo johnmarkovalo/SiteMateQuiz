@@ -11,11 +11,15 @@ import {
 } from "react-native";
 import api from "@/api/api";
 import endpoints from "@/api/endpoints";
+import { Article } from "@/types/article";
+import ArticleCard from "@/components/ArticleCard";
 
 export default function HomeScreen() {
+  const apiKey = "183daca270264bad86fc5b72972fb82a";
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [pageSize, setPageSize] = useState(10);
 
   const fetchArticles = async () => {
     try {
@@ -23,8 +27,8 @@ export default function HomeScreen() {
       const response = await api.get(endpoints.getArticles, {
         params: {
           q: searchQuery,
-          pageSize: 10,
-          apiKey: "183daca270264bad86fc5b72972fb82a",
+          pageSize: pageSize,
+          apiKey: apiKey,
         },
       });
       const data = await response.data;
@@ -73,29 +77,7 @@ export default function HomeScreen() {
 
         {!loading &&
           articles.map((article, index) => (
-            <View key={index} style={styles.card}>
-              <Image
-                source={{ uri: article.urlToImage }}
-                style={styles.image}
-              />
-              <View style={styles.content}>
-                <Text style={styles.title}>{article.title}</Text>
-                <Text style={styles.description} numberOfLines={3}>
-                  {article.description}
-                </Text>
-                <Text style={styles.author}>
-                  By: {article.author || "Unknown"}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    alert(`Read more at: ${article.url}`);
-                  }}
-                  style={styles.readMoreButton}
-                >
-                  <Text style={styles.readMoreText}>Read More</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            <ArticleCard key={index} article={article} />
           ))}
       </ScrollView>
     </View>
@@ -149,52 +131,5 @@ const styles = StyleSheet.create({
   cardscontainer: {
     padding: 20,
     backgroundColor: "#f5f5f5",
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    marginBottom: 20,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 5, // For Android shadow
-  },
-  image: {
-    width: "100%",
-    height: 200,
-    resizeMode: "cover",
-  },
-  content: {
-    padding: 15,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: "#333",
-  },
-  description: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 10,
-  },
-  author: {
-    fontSize: 12,
-    color: "#999",
-    marginBottom: 15,
-  },
-  readMoreButton: {
-    alignSelf: "flex-start",
-    backgroundColor: "#6200EE",
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-  },
-  readMoreText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
   },
 });
