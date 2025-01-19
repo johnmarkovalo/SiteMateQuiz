@@ -14,6 +14,8 @@ import endpoints from "@/api/endpoints";
 import { Article } from "@/types/article";
 import ArticleCard from "@/components/ArticleCard";
 import SearchBar from "@/components/SearchBar";
+import Modal from "react-native-modal";
+import ErrorModal from "@/components/ErrorModal";
 
 export default function HomeScreen() {
   const apiKey = "183daca270264bad86fc5b72972fb82a";
@@ -21,6 +23,9 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pageSize, setPageSize] = useState(10);
+
+  // In your state
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
 
   const fetchArticles = async () => {
     try {
@@ -38,6 +43,7 @@ export default function HomeScreen() {
       }
     } catch (error) {
       console.error("Error fetching articles:", error);
+      setIsErrorModalVisible(true);
     } finally {
       setLoading(false);
     }
@@ -68,6 +74,10 @@ export default function HomeScreen() {
             <ArticleCard key={index} article={article} />
           ))}
       </ScrollView>
+      <ErrorModal
+        isVisible={isErrorModalVisible}
+        onClose={() => setIsErrorModalVisible(false)}
+      />
     </View>
   );
 }
