@@ -1,5 +1,5 @@
 const endpoints = {
-  getArtciles: "/everything",
+  getArticles: "/everything",
 };
 
 export default endpoints;
