@@ -73,6 +73,10 @@ export default function HomeScreen() {
           articles.map((article, index) => (
             <ArticleCard key={index} article={article} />
           ))}
+
+        {!loading && articles.length === 0 && (
+          <Text style={{ textAlign: "center" }}>No articles found.</Text>
+        )}
       </ScrollView>
       <ErrorModal
         isVisible={isErrorModalVisible}
